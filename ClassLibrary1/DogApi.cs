@@ -12,12 +12,13 @@ namespace ClassLibrary1
             _client.BaseAddress = new Uri("https://dog.ceo/api/");
         }
 
-        public string GetRandomDog(string breed)
+        public DogApiResponse GetRandomDog(string breed)
         { 
             var response = _client.GetAsync($"breed/{breed}/images/random").Result;
             var result = response.Content.ReadAsStringAsync().Result;
+            var message = Newtonsoft.Json.JsonConvert.DeserializeObject<DogApiResponse>(result);
 
-            return result;
+            return message ?? new DogApiResponse();
         }
 
         public async Task<DogApiResponse> GetRandomDogAsync(string breed)
