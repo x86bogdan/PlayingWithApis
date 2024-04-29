@@ -1,18 +1,24 @@
 ﻿using ClassLibrary1;
+using Microsoft.Extensions.Configuration;
 using MyAPICode;
+
+IConfiguration config = new ConfigurationBuilder()
+        .AddEnvironmentVariables()
+        .AddUserSecrets<Program>()
+        .Build();
 
 //await UseDogApi();
 UseNutritionApi();
 Console.ReadKey();
 
-static void UseNutritionApi()
+void UseNutritionApi()
 {
-    var api = new NutritionAPI();
+    var api = new NutritionAPI(config);
     var result = api.GetNutritionData();
     Console.WriteLine(result);
 }
 
-static async Task UseDogApi()
+async Task UseDogApi()
 {
     var api = new DogApi();
     for (int i = 0; i < 10; i++)
