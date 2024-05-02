@@ -1,10 +1,35 @@
 ﻿using System.Text;
+using System.Threading.RateLimiting;
 
 namespace ClassLibrary1
 {
+    // presupunem ca suntem limitati la 1 request per secunda
+    public class DogApiLimited : DogApi
+    {
+        public DogApiLimited() : base()
+        {
+            var options = new TokenBucketRateLimiterOptions
+            {
+                TokenLimit = 1,
+                QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                QueueLimit = 1,
+                ReplenishmentPeriod = TimeSpan.FromMilliseconds(1000),
+                TokensPerPeriod = 1,
+                AutoReplenishment = true
+            };
+
+            // Create an HTTP client with the client-side rate limited handler.
+            _client = new HttpClient(
+                handler: new ClientSideRateLimitedHandler(
+                    rateLimiter: new TokenBucketRateLimiter(options)));
+
+            _client.BaseAddress = new Uri("https://dog.ceo/api/");
+        }
+    }
+
     public class DogApi
     {
-        private HttpClient _client;
+        protected HttpClient _client;
         
         public DogApi()
         {
