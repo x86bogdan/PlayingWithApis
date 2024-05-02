@@ -1,4 +1,5 @@
-﻿using ClassLibrary1;
+﻿using System.Diagnostics;
+using ClassLibrary1;
 using Microsoft.Extensions.Configuration;
 using MyAPICode;
 
@@ -7,8 +8,8 @@ IConfiguration config = new ConfigurationBuilder()
         .AddUserSecrets<Program>()
         .Build();
 
-//await UseDogApi();
-UseNutritionApi();
+await UseDogApi();
+//UseNutritionApi();
 Console.ReadKey();
 
 void UseNutritionApi()
@@ -20,11 +21,26 @@ void UseNutritionApi()
 
 async Task UseDogApi()
 {
+    var timer = new Stopwatch();
     var api = new DogApi();
     for (int i = 0; i < 10; i++)
     {
+        timer.Start();
         var result = await api.GetRandomDogAsync("african");
-        Console.WriteLine(result.Status);
+        timer.Stop();
+        Console.Write($"Normal API: Execution: {result.Status} Elapsed miliseconds: {timer.ElapsedMilliseconds} ");
         Console.WriteLine(result.Message);
+        timer.Reset();
+    }
+
+    var limitedApi = new DogApiLimited();
+    for (int i = 0; i < 10; i++)
+    {
+        timer.Start();
+        var result = await limitedApi.GetRandomDogAsync("african");
+        timer.Stop();
+        Console.Write($"Limited API: Execution: {result.Status} Elapsed miliseconds: {timer.ElapsedMilliseconds} ");
+        Console.WriteLine(result.Message);
+        timer.Reset();
     }
 }
