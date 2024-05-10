@@ -8,7 +8,9 @@ IConfiguration config = new ConfigurationBuilder()
         .AddUserSecrets<Program>()
         .Build();
 
-await UseDogApi();
+await UseStudentMockApi();
+
+//await UseDogApi();
 //UseNutritionApi();
 Console.ReadKey();
 
@@ -43,4 +45,11 @@ async Task UseDogApi()
         Console.WriteLine(result.Message);
         timer.Reset();
     }
+}
+
+static async Task UseStudentMockApi()
+{
+    var api = new StudentMockApi();
+    var result = await api.GetStudentData();
+    Console.WriteLine(result);
 }
