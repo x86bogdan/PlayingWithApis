@@ -50,6 +50,10 @@ async Task UseDogApi()
 static async Task UseStudentMockApi()
 {
     var api = new StudentMockApi();
-    var result = await api.GetStudentData();
-    Console.WriteLine(result);
+    var students = await api.GetStudentData();
+    foreach (var student in students)
+    {
+        Console.WriteLine($"Informatii student: {student.FirstName} {student.LastName}");
+        Console.WriteLine($"Id: {student.Id}, DataNasterii:, {student.DateOfBirth}, Adresa: {student.Address?.Street} {student.Address?.Number}, {student.Address?.City}");
+    }
 }
