@@ -14,5 +14,21 @@ namespace ClassLibrary1
             var students = JsonConvert.DeserializeObject<IEnumerable<Student>>(stringResult) ?? new List<Student>();
             return students;
         }
+
+        public int TestMethod(bool? input)
+        {
+            if (input == null)
+            {
+                return 500;
+            }
+            if (input == true)
+            {
+                return 200;
+            }
+            else
+            {
+                return 404;
+            }
+        }
     }
 }
