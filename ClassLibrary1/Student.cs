@@ -34,9 +34,11 @@ namespace ClassLibrary1
         [JsonProperty("adress")]
         public Address? Address { get; set; }
 
+        [JsonProperty("dog")]
+        public string? Dog { get; set; }
+
         [JsonProperty("a_names")]
         public string? AName { get; set; }
-
     }
 
     public class Address

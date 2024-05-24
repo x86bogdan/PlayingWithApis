@@ -8,8 +8,9 @@ IConfiguration config = new ConfigurationBuilder()
         .AddUserSecrets<Program>()
         .Build();
 
-await UseStudentMockApi();
 
+UseHumanAndDog();
+//await UseStudentMockApi();
 //await UseDogApi();
 //UseNutritionApi();
 Console.ReadKey();
@@ -55,5 +56,15 @@ static async Task UseStudentMockApi()
     {
         Console.WriteLine($"Informatii student: {student.FirstName} {student.LastName}");
         Console.WriteLine($"Id: {student.Id}, DataNasterii:, {student.DateOfBirth}, Adresa: {student.Address?.Street} {student.Address?.Number}, {student.Address?.City}");
+    }
+}
+
+static void UseHumanAndDog()
+{
+    var api = new HumanAndDog();
+    var result = api.GetStudentAndDog();
+    foreach (var student in result)
+    {
+        Console.WriteLine($"Informatii student: {student.FirstName} {student.LastName}, Rasa caine: {student.DogBreed}, poza: {student.DogImage}");
     }
 }
