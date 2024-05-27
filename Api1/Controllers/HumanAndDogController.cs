@@ -8,7 +8,7 @@ namespace Api1.Controllers
     public class HumanAndDogController : Controller
     {
         [HttpGet]
-        //[ProducesResponseType(IEnumerable<StudentAndDog>)]
+        [Produces(typeof(IEnumerable<StudentAndDog>))]
         public IActionResult Index()
         {
             var api = new HumanAndDog();
