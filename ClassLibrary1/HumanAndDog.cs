@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.Extensions.Configuration;
 
 namespace ClassLibrary1
 {
     public class HumanAndDog
     {
-        public IList<StudentAndDog> GetStudentAndDog()
+        public IList<StudentAndDog> GetStudentAndDog(IConfiguration configuration)
         {
-            var studentApi = new StudentMockApi();
+            var studentApi = new StudentMockApi(configuration);
             var students = studentApi.GetStudentData().Result;
             var response = new List<StudentAndDog>();
             var dogApi = new DogApi();

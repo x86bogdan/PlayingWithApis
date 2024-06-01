@@ -8,13 +8,19 @@ namespace Api1.Controllers
     [Route("human")]
     public class HumanAndDogController : Controller
     {
+        public IConfiguration _config;
+        public HumanAndDogController(IConfiguration configuration)
+        {
+            _config = configuration;
+        }
+
         [Route("api")]
         [HttpGet()]
         [Produces(typeof(IEnumerable<StudentAndDog>))]
         public IActionResult GetStudentDogsFromApi()
         {
             var api = new HumanAndDog();
-            var result = api.GetStudentAndDog();
+            var result = api.GetStudentAndDog(_config);
             return Ok(result);
         }
 
@@ -41,7 +47,7 @@ namespace Api1.Controllers
             appContext.Database.EnsureCreated();
 
             var api = new HumanAndDog();
-            var result = api.GetStudentAndDog();
+            var result = api.GetStudentAndDog(_config);
             var oneResult = result.FirstOrDefault();
 
             var myDog = new StudentDog
@@ -72,7 +78,7 @@ namespace Api1.Controllers
             }
         }
 
-        [Route("database")]
+        [Route("database/[action]")]
         [HttpGet]
         public IActionResult GetStudentDogsByBreed(string breed)
         {

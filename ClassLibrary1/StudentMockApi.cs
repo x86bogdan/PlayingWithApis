@@ -1,14 +1,21 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 
 namespace ClassLibrary1
 {
     public class StudentMockApi
     {
+        private readonly IConfiguration _config;
+        public StudentMockApi(IConfiguration configuration)
+        {
+            _config = configuration;
+        }
 
         public async Task<IEnumerable<Student>> GetStudentData()
         { 
-            var client = new HttpClient();
-            var respone = await client.GetAsync("https://my.api.mockaroo.com/sudents_v2?key=c0a6d370");
+            using var client = new HttpClient();
+            client.BaseAddress = new Uri("https://my.api.mockaroo.com/");
+            var respone = await client.GetAsync($"sudents_v2?key={_config["MokarooApiKey"]}");
             var stringResult = await respone.Content.ReadAsStringAsync();
             // deserializam in tipul de date corect, iar daca deserializarea nu reuseste (intoarce null) returnam o lista goala
             var students = JsonConvert.DeserializeObject<IEnumerable<Student>>(stringResult) ?? new List<Student>();

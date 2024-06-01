@@ -9,9 +9,9 @@ IConfiguration config = new ConfigurationBuilder()
         .Build();
 
 
-UseHumanAndDog();
+UseHumanAndDog(config);
 //await UseStudentMockApi();
-//await UseDogApi();
+//await UseDogApi(config);
 //UseNutritionApi();
 Console.ReadKey();
 
@@ -48,9 +48,9 @@ async Task UseDogApi()
     }
 }
 
-static async Task UseStudentMockApi()
+static async Task UseStudentMockApi(IConfiguration configuration)
 {
-    var api = new StudentMockApi();
+    var api = new StudentMockApi(configuration);
     var students = await api.GetStudentData();
     foreach (var student in students)
     {
@@ -59,10 +59,10 @@ static async Task UseStudentMockApi()
     }
 }
 
-static void UseHumanAndDog()
+static void UseHumanAndDog(IConfiguration configuration)
 {
     var api = new HumanAndDog();
-    var result = api.GetStudentAndDog();
+    var result = api.GetStudentAndDog(configuration);
     foreach (var student in result)
     {
         Console.WriteLine($"Informatii student: {student.FirstName} {student.LastName}, Rasa caine: {student.DogBreed}, poza: {student.DogImage}");
