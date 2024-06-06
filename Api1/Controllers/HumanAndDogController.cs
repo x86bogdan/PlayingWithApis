@@ -1,6 +1,8 @@
 ﻿using Api1.DatabaseModels;
 using ClassLibrary1;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Data.Sqlite;
 
 namespace Api1.Controllers
 {
@@ -82,20 +84,60 @@ namespace Api1.Controllers
         [HttpGet]
         public IActionResult GetStudentDogsByBreed(string breed)
         {
-            using (var appContext = new ApplicationContext())
+            using (var dbContext = new ApplicationContext())
             {
-                //appContext.Database.BeginTransaction();
+                var query = @"SELECT Id, FirstName, LastName, DogName, DogBreed, DogImage
+FROM StudentDogs
+WHERE DogBreed = @breed";
+      
+                var breedParam = new SqliteParameter("@breed", breed);
+                var dogs = dbContext.StudentDogs.FromSqlRaw(query, breedParam);
 
-                //appContext.Database.CommitTransaction();
+                // equivalent with: 
+                //var dogs = dbContext.StudentDogs.Where(d => d.DogBreed == breed);
 
-                //var x = from appContext.StudentDogs
-                //        where appContext.StudentDogs.Count() > 0
-                //        select sudasd
+                return Ok(dogs.ToList());
+            }
+        }
 
-                var dogs = appContext.StudentDogs.Where(d => d.DogBreed == breed);
-                //var dogs = appContext.StudentDogs.Where(d => d.Id > 0);
+        [Route("database/[action]")]
+        [HttpGet]
+        public IActionResult GetStudentDogsCountByBreed(string breed)
+        {
+            using (var dbContext = new ApplicationContext())
+            {
+                var query = @"SELECT @DogCount = Count(Id)
+FROM StudentDogs
+WHERE DogBreed = @breed
+GROUP BY DogBreed";
 
-                return Ok(dogs);
+                // return a result from a query, will work in sql but doesn't work in sqlite
+                var breedParam = new SqliteParameter("@breed", breed);
+                var dogCountParam = new SqliteParameter("@DogCount", System.Data.SqlDbType.BigInt);
+                dogCountParam.Direction = System.Data.ParameterDirection.Output;
+
+                var dogs = dbContext.Database.ExecuteSqlRaw(query, dogCountParam, breedParam);
+
+                return Ok(dogCountParam.Value);
+            }
+        }
+
+        [Route("database/[action]")]
+        [HttpGet]
+        public IActionResult GetStudentDogsStatistics()
+        {
+            using (var dbContext = new ApplicationContext())
+            {
+                dbContext.Database.BeginTransaction();
+
+                var query = @"SELECT DogBreed, Count(Id) AS No
+FROM StudentDogs
+GROUP BY DogBreed";
+                var result = dbContext.Database.ExecuteSqlRaw(query);
+
+                dbContext.Database.CommitTransaction();
+
+                return Ok(result);
             }
         }
 
